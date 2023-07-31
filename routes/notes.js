@@ -1,5 +1,5 @@
 const express = require('express');
-const { readAndAppend, readFromFile, writeToFile } = require('../helpers/fsUtils');
+const { readFromFile, writeToFile, readAndAppend } = require('../helpers/fsUtils');
 const router = express.Router();
 const uuid = require('../helpers/uuid');
 
