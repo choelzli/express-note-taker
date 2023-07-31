@@ -1,10 +1,11 @@
 const express = require('express');
-const { readFromFile, writeToFile, readAndAppend } = require('../helpers/fsUtils');
 const router = express.Router();
 const uuid = require('../helpers/uuid');
 
+const fs = require('fs');
+
 router.get('/', (req, res) => {
-    readFromFile('./db/db.json', (err, data) => err ? console.error(err) : res.status(200).json(JSON.parse(data)));
+    fs.readFile('./db/db.json', (err, data) => err ? console.error(err) : res.status(200).json(JSON.parse(data)));
 });
 
 router.post('/', (req, res) => {
@@ -17,31 +18,36 @@ router.post('/', (req, res) => {
             id: uuid()
         };
     
-        readAndAppend(newNote, './db/db.json');
+    fs.readFile('./db/db.json', (err, data) => {
+            if (err) {
+                console.error(err);
+            } else {
+                let parsedNotes = JSON.parse(data);
+                parsedNotes.push(newNote);
 
-        const response = {
-            status: 'success',
-            body: newNote,
-        };
+                fs.writeFile('./db/db.json', JSON.stringify(parsedNotes), (err) => err ? console.error(err) : console.log(`the note ${JSON.stringify(newNote)} has been added to file`));
+            }
+    });
 
-        res.json(response);
+        res.status(201).json(newNote);
     } else {
-        res.json('Error in posting note');
+        res.status(500).json('Error');
     }
+
 });
 
 router.delete('/:id', (req, res) => {
     const noteIdToDelete = req.params.id;
 
-    readFromFile('./db/db.json', (err, data) => {
+    fs.readFile('./db/db.json', (err, data) => {
         if (err) {
             console.error(err);
             res.status(500).json('Error reading data');
         } else {
-            const notes = JSON.parse(data);
-            const updatedNotes = notes.filter(note => note.id !== noteIdToDelete);
+            let parsedNotes = JSON.parse(data);
+            const updatedNotes = parsedNotes.filter(note => note.id !== noteIdToDelete);
 
-            writeToFile('./db/db.json', JSON.stringify(updatedNotes), (err) => {
+            fs.writeFile('./db/db.json', JSON.stringify(updatedNotes), (err) => {
                 if (err) {
                     console.error(err);
                     res.status(500).json('Error writing data');
