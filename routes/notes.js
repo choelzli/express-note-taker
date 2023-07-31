@@ -8,12 +8,12 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    const { title, note } = req.body;
+    const { title, text } = req.body;
 
-    if(title && note) {
+    if(title && text) {
         const newNote = {
             title,
-            note,
+            text,
             id: uuid()
         };
     
