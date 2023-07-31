@@ -1,6 +1,7 @@
 const express = require('express');
-
+const { readAndAppend, readFromFile, writeToFile } = require('../helpers/fsUtils');
 const router = express.Router();
+const uuid = require('../helpers/uuid');
 
 router.get('/', (req, res) => {
     readFromFile('./db/db.json', (err, data) => err ? console.error(err) : res.status(200).json(JSON.parse(data)));
@@ -12,7 +13,8 @@ router.post('/', (req, res) => {
     if(title && note) {
         const newNote = {
             title,
-            note
+            note,
+            id: uuid()
         };
     
         readAndAppend(newNote, './db/db.json');
