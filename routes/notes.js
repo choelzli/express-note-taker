@@ -1,5 +1,4 @@
 const express = require('express');
-const { readAndAppend, writeToFile } = require('../../../../class-repo/11-Express/01-Activities/24-Stu_Custom-Middleware/Unsolved/helpers/fsUtils');
 
 const router = express.Router();
 
@@ -29,7 +28,7 @@ router.post('/', (req, res) => {
     }
 });
 
-router.delete('./:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     const noteIdToDelete = req.params.id;
 
     readFromFile('./db/db.json', (err, data) => {
