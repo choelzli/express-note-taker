@@ -7,7 +7,7 @@ const api = require('./routes/notes')
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('api/notes', api);
+app.use('/api/notes', api);
 
 app.get('/', (req, res) =>
     res.sendFile(path.join(__dirname, '/public/index.html'))
